@@ -40,6 +40,9 @@ public class UserServlet extends HttpServlet {
                 case "search":
                     showSearchForm(request,response);
                     break;
+                case "sort":
+                    showSortListUser(request,response);
+                    break;
                 default:
                     listUser(request, response);
                     break;
@@ -49,6 +52,12 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    private void showSortListUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        List<User> users = userDao.sortByName();
+        request.setAttribute("sortlist",users);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("user/sortlist.jsp");
+        dispatcher.forward(request,response);
+    }
 
 
     @Override
