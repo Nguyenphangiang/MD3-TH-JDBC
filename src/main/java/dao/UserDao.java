@@ -71,8 +71,8 @@ public class UserDao implements IUserDAO {
         }
         return user;
     }
-    public User searchUser(String country) {
-        User user = null;
+    public List<User> searchUser(String country) {
+        List<User> users = new ArrayList<>();
         try(Connection connection = getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_BY_COUNTRY)){
             preparedStatement.setString(1,country);
@@ -82,12 +82,12 @@ public class UserDao implements IUserDAO {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String email = rs.getString("email");
-                user = new User(id,name,email,country);
+               users.add(new User(id,name,email,country)) ;
             }
         } catch (SQLException e) {
             printSQLException(e);
         }
-        return user;
+        return users;
     }
 
     @Override

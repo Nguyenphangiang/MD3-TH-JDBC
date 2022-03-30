@@ -22,21 +22,17 @@
 <%--            <input type="hidden" name="id" value="<c:out value='${userSearch.id}' />"/>--%>
 <%--        </c:if>--%>
         <tr>
-            <th>User Name:</th>
-            <td>${userSearch.name}</td>
+            <td>Name</td>
+            <td>Email</td>
+            <td>Country</td>
         </tr>
+        <c:forEach items="${userSearch}" var="user">
         <tr>
-            <th>User Email:</th>
-            <td>
-                ${userSearch.email}
-            </td>
+            <td><c:out value="${user.name}"/></td>
+            <td><c:out value="${user.email}"/></td>
+            <td><c:out value="${user.country}"/></td>
         </tr>
-        <tr>
-            <th>Country:</th>
-            <td>
-                ${userSearch.country}
-            </td>
-        </tr>
+        </c:forEach>
     </table>
 </body>
 </html>

@@ -8,6 +8,7 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "UserServlet", urlPatterns = "/users")
@@ -124,7 +125,8 @@ public class UserServlet extends HttpServlet {
     }
     private void displayUser(HttpServletRequest request, HttpServletResponse response)throws ServletException,IOException{
         String country = request.getParameter("country");
-        User existingUser = userDao.searchUser(country);
+        List<User> existingUser = userDao.searchUser(country);
+
         request.setAttribute("userSearch",existingUser);
         RequestDispatcher dispatcher = request.getRequestDispatcher("user/display.jsp");
         dispatcher.forward(request,response);
