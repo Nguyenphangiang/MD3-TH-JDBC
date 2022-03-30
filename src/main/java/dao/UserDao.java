@@ -2,8 +2,7 @@ package dao;
 
 import model.User;
 
-import javax.servlet.ServletRegistration;
-import javax.servlet.jsp.jstl.sql.Result;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,8 @@ public class UserDao implements IUserDAO {
 
     private static final String INSERT_USERS_SQL = "INSERT INTO users (name, email, country) VALUES (?, ?, ?);";
     private static final String SELECT_USER_BY_ID = "select id,name,email,country from users where id =?";
+    private static final String SELECT_USER_BY_COUNTRY = "select id,name,email,country from users where country =?";
+
     private static final String SELECT_ALL_USERS = "select * from users";
     private static final String DELETE_USERS_SQL = "delete from users where id = ?;";
     private static final String UPDATE_USERS_SQL = "update users set name = ?,email= ?, country =? where id = ?;";
@@ -51,12 +52,11 @@ public class UserDao implements IUserDAO {
         }
     }
 
-
     @Override
     public User selectUser(int id) {
         User user = null;
         try(Connection connection = getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_BY_ID);){
+        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_BY_ID)){
             preparedStatement.setInt(1,id);
             System.out.println(preparedStatement);
             ResultSet rs = preparedStatement.executeQuery();
@@ -64,6 +64,24 @@ public class UserDao implements IUserDAO {
                 String name = rs.getString("name");
                 String email = rs.getString("email");
                 String country = rs.getString("country");
+                user = new User(id,name,email,country);
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+        return user;
+    }
+    public User searchUser(String country) {
+        User user = null;
+        try(Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_BY_COUNTRY)){
+            preparedStatement.setString(1,country);
+            System.out.println(preparedStatement);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
                 user = new User(id,name,email,country);
             }
         } catch (SQLException e) {
@@ -79,7 +97,7 @@ public class UserDao implements IUserDAO {
         try (Connection connection = getConnection();
 
              // Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_USERS);) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_USERS)) {
             System.out.println(preparedStatement);
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
@@ -97,6 +115,8 @@ public class UserDao implements IUserDAO {
         }
         return users;
     }
+
+
 
     @Override
     public boolean deleteUser(int id) throws SQLException {
